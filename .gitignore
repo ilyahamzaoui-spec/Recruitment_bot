@@ -1,0 +1,17 @@
+.env
+
+# 2. Виртуальное окружение
+.venv
+venv/
+env/
+
+# 3. Docker и кэш
+# Docker игнорирует файлы, указанные в .dockerignore, но это хорошая практика
+*.pyc
+__pycache__/
+
+# 4. Логи и данные
+*.log
+data/
+db.sqlite
+.DS_Store # macOS
