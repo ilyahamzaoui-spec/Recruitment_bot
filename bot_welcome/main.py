@@ -37,7 +37,7 @@ async def main():
     dp.include_router(user_router)
 
     # 5. Запуск бота
-    logging.info("Starting Bot №1 'Приветственный гид'...")
+    logging.info("Starting User Bot ...")
     await dp.start_polling(bot)
 
 

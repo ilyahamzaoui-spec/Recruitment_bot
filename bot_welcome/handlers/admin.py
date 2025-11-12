@@ -8,6 +8,7 @@ from bot_welcome.services.content_service import ContentService
 from core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 import json
+from aiogram.enums import ParseMode
 
 admin_router = Router()
 
@@ -37,11 +38,11 @@ class IsAdmin(Filter):
 async def cmd_admin(message: Message):
     """Главное меню админ-панели."""
     text = "**⚙️ Панель Администратора Бот №1:**\n"
-    text += "/update_welcome - Обновить текст приветствия и ссылки\n"
-    text += "/add_vacancy - Добавить новую вакансию в кэш\n"
-    text += "/toggle_vacancy - Изменить статус активности вакансии (по ID поста)"
+    text += "/update\\_welcome \\- Обновить текст приветствия и ссылки\n"
+    text += "/add\\_vacancy \\- Добавить новую вакансию в кэш\n"
+    text += "/toggle\\_vacancy \\- Изменить статус активности вакансии \\(по ID поста\\)"
 
-    await message.answer(text, parse_mode=ParseMode.MARKDOWN)
+    await message.answer(text, parse_mode=ParseMode.MARKDOWN_V2)
 
 
 # --- 1. Обновление приветственного контента ---
