@@ -1,5 +1,5 @@
 # bot_welcome/handlers/user.py
-from aiogram import Router, types, F
+from aiogram import Router, types, F, Bot
 from aiogram.enums import ParseMode
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import Message, CallbackQuery, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
@@ -11,6 +11,7 @@ import logging
 import re
 from typing import Optional, Union
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from bot_welcome.services.content_service import ContentService
 from bot_3_qc.handlers.recruiter import format_application_message, create_recruiter_keyboard  # QC-функции
@@ -188,7 +189,7 @@ async def handle_new_member_in_chat(message: Message, session: AsyncSession):
         try:
             await message.bot.send_message(
                 chat_id=member.id,
-                text="👋 *Добро пожаловать в канал\\!*\\n\\nНажмите /start, чтобы увидеть актуальные вакансии и полезные ссылки\\.",
+                text="👋 *Добро пожаловать в канал*\\n\\nНажмите /start, чтобы увидеть актуальные вакансии и полезные ссылки\\.",
                 parse_mode=ParseMode.MARKDOWN_V2  # <--- ИСПРАВЛЕНИЕ
             )
         except Exception as e:
@@ -494,6 +495,7 @@ async def finalize_apply(update: types.Union[Message, CallbackQuery], state: FSM
     }
 
     application_id = state_data['application_id']
+    vacancy_post_id = state_data['vacancy_id']
     vacancy_title = state_data['vacancy_title']
 
     # 3. Финализация и отправка в API
@@ -503,16 +505,24 @@ async def finalize_apply(update: types.Union[Message, CallbackQuery], state: FSM
     # 4. Коммуникация с кандидатом (ФИНАЛЬНЫЙ ОТВЕТ)
     if success:
         # Пытаемся получить рекрутера по направлению (берем первое слово из skills)
-        direction = final_data['professional_info']['skills'].split(',')[0].strip().lower()
+        vacancy_result = await session.execute(
+            select(CachedVacancy).filter_by(post_id=vacancy_post_id)
+        )
+        vacancy = vacancy_result.scalar_one_or_none()
+        if vacancy and vacancy.direction:
+            direction = vacancy.direction.lower()
+        else:
+            logging.error(f"Vacancy ID {vacancy_post_id} not found in cache. Defaulting direction.")
+            direction = 'default'
         recruiter = await app_service.get_recruiter_by_direction(direction)
 
-        recruiter_contact = recruiter.recruiter_username if recruiter and recruiter.recruiter_username else "\\@default\\_recruiter"
+        recruiter_contact = recruiter.recruiter_username if recruiter and recruiter.recruiter_username else "default_recruiter"
 
         final_response = (
-            f"🎉 *Ваш отклик успешно принят\\!*\\n\\n"
-            f"*🎯 Вакансия:* {escape_markdown_v2(vacancy_title)}\\n\\n"
+            f"🎉 *Ваш отклик успешно принят*\n"
+            f"*🎯 Вакансия:* {escape_markdown_v2(vacancy_title)}\n"
             f"*📞 Для быстрой связи напишите Вашему рекрутеру:*\n"
-            f"👉 \\@{escape_markdown_v2(recruiter_contact)}\\n\\n"
+            f"👉 @{escape_markdown_v2(recruiter_contact)}\n"
             f"Укажите, что Вы по поводу вакансии \\[*{escape_markdown_v2(vacancy_title)}*\\]\\."
         )
 
@@ -522,16 +532,19 @@ async def finalize_apply(update: types.Union[Message, CallbackQuery], state: FSM
 
         # 2. Форматируем и отправляем сообщение
         if application:
+            recruiter_bot_instance = Bot(token=settings.RECRUITER_BOT_TOKEN)
+
             qc_message = format_application_message(application)
             qc_keyboard = create_recruiter_keyboard(application_id)
 
             try:
-                await update.bot.send_message(
+                await recruiter_bot_instance.send_message(
                     chat_id=settings.QC_CHAT_ID,
                     text=qc_message,
                     reply_markup=qc_keyboard,
-                    parse_mode=ParseMode.MARKDOWN_V2  # Используем V2 для QC-чата
+                    parse_mode=ParseMode.MARKDOWN_V2
                 )
+                await recruiter_bot_instance.session.close()  # Закрыть сессию
             except Exception as e:
                 logging.error(f"Failed to send QC notification for app {application_id}: {e}")
         # ---------------------------------------------

@@ -29,6 +29,7 @@ class CachedVacancy(Base):
     vacancy_title = Column(Text, nullable=False)
     telegram_link = Column(Text, nullable=False)
     post_id = Column(Integer, nullable=False, unique=True)
+    direction = Column(String(50), nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
 
@@ -67,6 +68,7 @@ class StatusUpdate(Base):
     old_status = Column(Enum(ApplicationStatus), nullable=False)
     new_status = Column(Enum(ApplicationStatus), nullable=False)
     recruiter_id = Column(BigInteger, nullable=True)
+    reason = Column(Text, nullable=True)
     timestamp = Column(TIMESTAMP, default=datetime.utcnow)
 
     application = relationship("Application")

@@ -33,14 +33,14 @@ services:
       db:
         condition: service_healthy
 
-  app:
+  candidate_bot:
     build:
       context: .
       dockerfile: bot_welcome/Dockerfile
-    container_name: apply_bot_container
+    container_name: candidate_bot_container
     environment:
-      - BOT_TOKEN_WELCOME=${BOT_TOKEN_WELCOME}
-      - BOT_TOKEN_RECRUITER=${BOT_TOKEN_RECRUITER}
+      - CANDIDATE_BOT_TOKEN=${CANDIDATE_BOT_TOKEN}
+      - RECRUITER_BOT_TOKEN=${RECRUITER_BOT_TOKEN}
       - DATABASE_URL=${DATABASE_URL}  # <--- ИСПРАВЛЕНО
       - CHANNEL_USERNAME=${CHANNEL_USERNAME}
       - QC_CHAT_ID=${QC_CHAT_ID}
@@ -60,9 +60,9 @@ services:
       dockerfile: bot_3_qc/Dockerfile
     container_name: recruiter_bot_container
     environment:
-      - BOT_TOKEN_WELCOME=${BOT_TOKEN_WELCOME}
-      - BOT_TOKEN_RECRUITER=${BOT_TOKEN_RECRUITER}
-      - DATABASE_URL=${DATABASE_URL} # <--- ИСПРАВЛЕНО
+      - CANDIDATE_BOT_TOKEN=${CANDIDATE_BOT_TOKEN}
+      - RECRUITER_BOT_TOKEN=${RECRUITER_BOT_TOKEN}
+      - DATABASE_URL=${DATABASE_URL}
       - CHANNEL_USERNAME=${CHANNEL_USERNAME}
       - QC_CHAT_ID=${QC_CHAT_ID}
       - ADMIN_IDS=${ADMIN_IDS}

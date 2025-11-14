@@ -19,10 +19,19 @@ class ApplicationService:
     async def get_recruiter_by_direction(self, direction: str) -> Optional[RecruiterMapping]:
         result = await self.session.execute(
             select(RecruiterMapping)
-            .where(RecruiterMapping.direction == direction.lower())
+            .where(RecruiterMapping.direction == direction)
             .where(RecruiterMapping.is_active == True)
         )
         return result.scalars().first()
+        if recruiter:
+            return recruiter
+
+        default_result = await self.session.execute(
+            select(RecruiterMapping)
+            .where(RecruiterMapping.direction == 'default')
+            .where(RecruiterMapping.is_active == True)
+        )
+        return default_result.scalars().first()
 
     async def add_update_recruiter(self, direction:str, tg_id: int, username: str, is_active:bool = True):
         direction = direction.lower()

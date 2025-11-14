@@ -80,7 +80,7 @@ async def process_new_links_json(message: Message, state: FSMContext, session: A
         service = get_service(session)
         await service.update_welcome_content(new_text, links_data)
 
-        await message.answer("✅ **Приветственный контент успешно обновлен!**")
+        await message.answer("✅ **Приветственный контент успешно обновлен**")
         await state.clear()
     except json.JSONDecodeError:
         await message.answer("❌ **Ошибка:** Неверный формат JSON. Попробуйте снова.")
@@ -118,9 +118,9 @@ async def process_new_vacancy_data(message: Message, state: FSMContext, session:
 
         service = get_service(session)
         if await service.add_vacancy_to_cache(title, link, post_id):
-            await message.answer(f"✅ **Вакансия '{title}' успешно добавлена в кэш!**")
+            await message.answer(f"✅ **Вакансия '{title}' успешно добавлена в кэш**")
         else:
-            await message.answer(f"⚠️ **Вакансия с ID {post_id} уже существует!**")
+            await message.answer(f"⚠️ **Вакансия с ID {post_id} уже существует**")
 
         await state.clear()
 

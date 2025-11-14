@@ -22,7 +22,7 @@ async def main():
     # Инициализация Бота и Диспетчера
     # Используем токен рекрутера (который мы исправили в .env)
     bot = Bot(
-        token=settings.BOT_TOKEN_RECRUITER,
+        token=settings.RECRUITER_BOT_TOKEN,
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2)) # Используем V2 для QC-чата
     dp = Dispatcher(storage=MemoryStorage())
 

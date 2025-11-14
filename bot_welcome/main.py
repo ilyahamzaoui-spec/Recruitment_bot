@@ -13,6 +13,7 @@ from bot_welcome.handlers.admin import admin_router
 from bot_welcome.middlewares.db_middleware import DBSessionMiddleware
 from core.config import settings
 from core.db import init_db, AsyncSessionLocal
+from core.init_data import insert_initial_data
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,9 +22,12 @@ async def main():
     # 1. Инициализация БД
     await init_db()
 
+    async with AsyncSessionLocal() as session:
+        await insert_initial_data(session)
+
     # 2. Инициализация Бота и Диспетчера
     bot = Bot(
-        token=settings.BOT_TOKEN_WELCOME,
+        token=settings.CANDIDATE_BOT_TOKEN,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher(storage=MemoryStorage())
 

@@ -5,8 +5,8 @@ from typing import List
 
 class Settings(BaseSettings):
     # Токен для Ботов Telegram
-    BOT_TOKEN_WELCOME: str
-    BOT_TOKEN_RECRUITER: str
+    CANDIDATE_BOT_TOKEN: str
+    RECRUITER_BOT_TOKEN: str
 
     # URL для подключения к PostgreSQL (пример: postgresql+asyncpg://user:pass@host/db)
     DATABASE_URL: str

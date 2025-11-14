@@ -20,7 +20,7 @@ class ContentService:
         content: WelcomeContent = result.scalars().first()
         if content:
             return content.welcome_text, content.links_json
-        return "Привет! Используйте /help для справки.", []
+        return "Привет Используйте /help для справки.", []
 
     async def get_latest_vacancies(self, limit: int = 5) -> List[CachedVacancy]:
         """Получает N последних активных вакансий."""
@@ -56,7 +56,7 @@ class ContentService:
         self.session.add(new_content)
         await self.session.commit()
 
-    async def add_vacancy_to_cache(self, title: str, link: str, post_id: int) -> bool:
+    async def add_vacancy_to_cache(self, title: str, link: str, post_id: int, direction: str) -> bool:
         """Добавляет или обновляет вакансию в кэше."""
         # Проверяем на дубликат по post_id
         exists = await self.session.execute(
@@ -69,6 +69,7 @@ class ContentService:
             vacancy_title=title,
             telegram_link=link,
             post_id=post_id,
+            direction=direction.lower(),
             is_active=True
         )
         self.session.add(new_vacancy)

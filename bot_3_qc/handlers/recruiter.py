@@ -58,15 +58,15 @@ def format_application_message(application: Application) -> str:
 
     message_text = (
         # ИСПРАВЛЕНИЕ: Экранируем ID: {application.id} скобками
-        f"🚨 *НОВЫЙ ОТКЛИК\\!* ID: {application.id}\\n\\n"
+        f"🚨 *НОВЫЙ ОТКЛИК* ID: {application.id}\n"
         f"*💼 Вакансия:* {vacancy_title_esc}\n"
         f"*👤 Кандидат:* {full_name_esc}\n"
         f"*🎯 Уровень:* {level_esc}\n"
         f"*✨ Скиллы:* {skills_esc}\n\n"
         f"*📞 Контакты:*\n"
-        f"  \\• Email: {email_esc}\n"
-        f"  \\• Телефон: {phone_esc}\n"
-        f"  \\• TG: {tg_esc}\n\n"
+        f"  • Email: {email_esc}\n"
+        f"  • Телефон: {phone_esc}\n"
+        f"  • TG: {tg_esc}\n\n"
         f"*📝 Опыт:* {experience_esc}\n"
         f"*📎 Резюме:* {resume_link_esc}\n"
         f"*🔄 Статус:* {application.status.value}"
