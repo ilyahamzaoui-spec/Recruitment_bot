@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 async def main():
-    logging.info("Starting Recruiter Bot for QC Chat...")
+    logging.info("Starting Recruiter Bot for QC Chat")
 
     # Инициализация Бота и Диспетчера
     # Используем токен рекрутера (который мы исправили в .env)

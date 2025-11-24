@@ -100,8 +100,10 @@ async def cmd_add_vacancy(message: Message, state: FSMContext):
         "Введите данные новой вакансии в формате:\n"
         "**Название вакансии**\n"
         "**Ссылка на пост**\n"
-        "**ID поста (только цифры)**\n"
-        "*(Каждый параметр в новой строке)*"
+        "**ID поста \\(только цифры\\)**\n"
+        "**Направление \\(Direction, например: python, java\\)**\n"
+        "*\\(Каждый параметр в новой строке\\)*",
+        parse_mode=ParseMode.MARKDOWN_V2
     )
 
 
@@ -109,15 +111,22 @@ async def cmd_add_vacancy(message: Message, state: FSMContext):
 async def process_new_vacancy_data(message: Message, state: FSMContext, session: AsyncSession):
     try:
         lines = message.text.strip().split('\n')
-        if len(lines) != 3:
+        if len(lines) != 4:
             raise ValueError("Необходимо 3 строки: Название, Ссылка, ID поста.")
 
         title = lines[0].strip()
         link = lines[1].strip()
-        post_id = int(lines[2].strip())
+        post_id_str = lines[2].strip()
+        direction = lines[3].strip()
+
+        try:
+            post_id = int(post_id_str)
+        except ValueError:
+            raise ValueError("ID поста должен быть числом.")
 
         service = get_service(session)
-        if await service.add_vacancy_to_cache(title, link, post_id):
+
+        if await service.add_vacancy_to_cache(title, link, post_id, direction):
             await message.answer(f"✅ **Вакансия '{title}' успешно добавлена в кэш**")
         else:
             await message.answer(f"⚠️ **Вакансия с ID {post_id} уже существует**")

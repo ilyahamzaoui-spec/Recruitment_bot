@@ -18,7 +18,7 @@ async def insert_initial_data(session: AsyncSession):
             tg_id=settings.ADMIN_IDS[0],
             username='ilya_hamza'
         )
-        logging.info("Inserted Python recruiter mapping.")
+        logging.info("Inserted Python recruiter mapping")
 
     if not await app_service.get_recruiter_by_direction('java'):
         await app_service.add_update_recruiter(
@@ -26,7 +26,7 @@ async def insert_initial_data(session: AsyncSession):
             tg_id=8888888888,
             username='java_recruiter'
         )
-        logging.info("Inserted Java recruiter mapping.")
+        logging.info("Inserted Java recruiter mapping")
 
     latest_vacancies = await content_service.get_latest_vacancies(limit=1)
 

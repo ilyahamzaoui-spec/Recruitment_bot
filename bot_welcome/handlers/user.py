@@ -190,7 +190,7 @@ async def handle_new_member_in_chat(message: Message, session: AsyncSession):
             await message.bot.send_message(
                 chat_id=member.id,
                 text="👋 *Добро пожаловать в канал*\\n\\nНажмите /start, чтобы увидеть актуальные вакансии и полезные ссылки\\.",
-                parse_mode=ParseMode.MARKDOWN_V2  # <--- ИСПРАВЛЕНИЕ
+                parse_mode=ParseMode.MARKDOWN_V2
             )
         except Exception as e:
             logging.error(f"Не удалось отправить приветствие пользователю {member.id}: {e}")
@@ -467,13 +467,13 @@ async def finalize_apply(update: types.Union[Message, CallbackQuery], state: FSM
             resume_data = {"type": "link", "value": update.text.strip()}
             resume_link = update.text.strip()
         else:
-            await update.answer("❌ Пожалуйста, отправьте файл PDF/DOCX, действующую ссылку или нажмите 'Пропустить'\\.",
+            await update.answer("❌ Пожалуйста, отправьте файл PDF/DOCX, действующую ссылку или нажмите 'Пропустить'",
                                 parse_mode=ParseMode.MARKDOWN_V2)
             return
     else:  # Кнопка "Пропустить"
         await update.answer()
         resume_data = {"type": "skip", "value": "Skipped"}
-        resume_link = "Не предоставлено."
+        resume_link = "Не предоставлено"
 
     # 2. Сбор всех данных
     state_data = await state.get_data()
@@ -523,7 +523,7 @@ async def finalize_apply(update: types.Union[Message, CallbackQuery], state: FSM
             f"*🎯 Вакансия:* {escape_markdown_v2(vacancy_title)}\n"
             f"*📞 Для быстрой связи напишите Вашему рекрутеру:*\n"
             f"👉 @{escape_markdown_v2(recruiter_contact)}\n"
-            f"Укажите, что Вы по поводу вакансии \\[*{escape_markdown_v2(vacancy_title)}*\\]\\."
+            f"Укажите, что Вы по поводу вакансии \\[*{escape_markdown_v2(vacancy_title)}*\\]"
         )
 
         # --- БЛОК ОТПРАВКИ УВЕДОМЛЕНИЯ В QC-ЧАТ ---
